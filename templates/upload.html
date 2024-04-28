@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/styles.css') }}">
+</head>
+<body>
+<div class="main_div">
+    <h1>Upload Receipt</h1>
+    {% if success == True %}
+        <h2> The image you uploaded is this:</h2>
+        <img src="static/images/{{ file_name }}" alt="Receipt">
+        <form action= "/receipt" method="GET">
+            <input type="hidden" name="filename" value="{{ file_name }}">
+            <input type="submit" value="Approve" class="button-main">
+        </form>
+
+    <h2>{{ message }}</h2>
+    {% else %}
+    <h2>{{ message }}</h2>
+    <form action= "/media" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file"></br>
+        <label for="filename">Receipt Name:</label>
+        <input type="text" id="filename" name="filename" placeholder="Enter Receipt Name (Optional)"><br>
+        <input type="submit" value="Upload" class="button-main">
+    </form>
+    {% endif %}
+</div>
+</body>
+</html>
