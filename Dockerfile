@@ -5,7 +5,11 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY . /app
+COPY main.py /app/
+COPY requirements.txt /app/
+COPY static /app/static/
+COPY templates /app/templates
+COPY proccess.py /app/
 
 # Install Tesseract and Hebrew language support
 RUN apt-get update && \

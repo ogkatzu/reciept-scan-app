@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request
 import os
 from proccess import get_text
+import platform
 
+usr_os = platform.system()
 
 app = Flask(__name__)
 
@@ -73,4 +75,7 @@ def receipt_read():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    if usr_os == 'Windows':
+        app.run(debug=True)
+    else:
+        app.run(host='0.0.0.0', debug=True)
