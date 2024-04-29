@@ -7,8 +7,6 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY main.py /app/
 COPY requirements.txt /app/
-COPY static /app/static/
-COPY templates /app/templates
 COPY proccess.py /app/
 
 # Install Tesseract and Hebrew language support
@@ -20,7 +18,7 @@ RUN apt-get update && \
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Make port 80 available to the world outside this container
-EXPOSE 80
+EXPOSE 5000
 
 # Define environment variable
 ENV FLASK_APP=main.py
@@ -30,4 +28,4 @@ COPY templates /app/templates
 COPY static /app/static
 
 # Run flask app when the container launches
-CMD ["flask", "run", "--host=0.0.0.0", "--port=80"]
+CMD ["flask", "run", "--host", "0.0.0.0"]
