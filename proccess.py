@@ -2,6 +2,10 @@ from PIL import Image
 import re
 import pytesseract
 import os
+import platform
+
+usr_os = platform.system()
+
 
 def invert_color(img_path) -> str:
     image = Image.open(img_path)
@@ -16,8 +20,10 @@ def invert_color(img_path) -> str:
     return new_filename
 
 
+if usr_os == 'Windows':
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 # If you don't have tesseract executable in your PATH, include the following:
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
 
 
 def get_text(img_path) -> (float, str):
