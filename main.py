@@ -89,16 +89,22 @@ def upload():
 def receipt_read():
     receipt_name = request.args.get("receipt_name")
     print(receipt_name)
-    db_file_path = db_mgmt.get_path_by_name(receipt_name)
+    db_file_path = db_mgmt.get_path_by_name(receipt_name)[1]
+    id = db_mgmt.get_path_by_name(receipt_name)[0]
     print(db_file_path)
     price, date = get_text(str(db_file_path))
+    db_mgmt.add_date_and_price(date, price, id)
     return render_template("receipt.html", price=price, date=date)
 
 
 @app.route("/get_receipt", methods=["GET", "POST"])
 def get_receipt():
     rows = db_mgmt.get_table_data()
-    return render_template('get_receipt.html', rows=rows)
+    return render_template('receipt_table.html', rows=rows)
+
+# @app.route("/show_receipts", methods=["GET", "POST"])
+# def show_receipts():
+
 
 
 if __name__ == "__main__":
