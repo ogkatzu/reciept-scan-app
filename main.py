@@ -4,6 +4,7 @@ from proccess import get_text
 import platform
 import db_mgmt
 import arrow
+import sqlite3
 
 usr_os = platform.system()
 
@@ -16,6 +17,7 @@ MEDIA_PATH = "static/images"
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 
 # Define a route for the upload page
@@ -91,6 +93,12 @@ def receipt_read():
     print(db_file_path)
     price, date = get_text(str(db_file_path))
     return render_template("receipt.html", price=price, date=date)
+
+
+@app.route("/get_receipt", methods=["GET", "POST"])
+def get_receipt():
+    rows = db_mgmt.get_table_data()
+    return render_template('get_receipt.html', rows=rows)
 
 
 if __name__ == "__main__":

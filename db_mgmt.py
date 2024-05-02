@@ -71,3 +71,18 @@ def check_if_name_exists(name) -> bool:
 
     # Return True if name exists, otherwise return False
     return row is not None
+
+def get_table_data():
+    # Connect to the SQLite database
+    conn = sqlite3.connect('main.db')
+    cursor = conn.cursor()
+
+    # Query all rows from your table
+    cursor.execute('SELECT * FROM file_paths')
+    rows = cursor.fetchall()
+
+    # Close the database connection
+    conn.close()
+
+    # Pass the rows to the template and render it
+    return rows
