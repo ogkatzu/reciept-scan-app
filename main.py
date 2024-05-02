@@ -2,6 +2,8 @@ from flask import Flask, render_template, request
 import os
 from proccess import get_text
 import platform
+import db_mgmt
+import arrow
 
 usr_os = platform.system()
 
@@ -17,7 +19,7 @@ def allowed_file(filename):
 
 
 # Define a route for the upload page
-@app.route("/media", methods=["GET", "POST"])
+@app.route("/upload_image", methods=["GET", "POST"])
 def upload_file():
     success = ""
     folder_path = "static/images"
@@ -41,10 +43,10 @@ def upload_file():
 
             # Get the extension of the file
             extension = file.filename.split(".")[-1]
-            file_path = os.path.join(folder_path, f"{filename}.{extension}")
+            full_filename = os.path.join(folder_path, f"{filename}.{extension}")
 
             # Check if the filename already exists
-            if os.path.exists(file_path):
+            if os.path.exists(full_filename):
                 return render_template(
                     "upload.html",
                     success=False,
@@ -54,11 +56,16 @@ def upload_file():
                 )
             # Use the original filename if no custom name is provided
             if filename == "":
-                filename = file.filename
+                filename = arrow.now().format("YYYY_MM_DD_HH_MM_SS")
+                full_filename = os.path.join(folder_path, f"{filename}.{extension}")
             # Save the uploaded file to a folder with the provided filename
-            file.save(os.path.join("static/images", f"{filename}.{extension}"))
+            file.save(full_filename)
+            # Add the file path to the database
+            db_mgmt.connect_to_db()
+            db_mgmt.add_file_path(full_filename, filename)
             return render_template(
-                "upload.html", success=True, file_name=f"{filename}.{extension}"
+                "upload.html", success=True, file_name=f"{full_filename}",
+                receipt_name = f"{filename}"
             )
         else:
             return render_template(
@@ -78,9 +85,11 @@ def upload():
 
 @app.route("/receipt", methods=["GET", "POST"])
 def receipt_read():
-    filename = request.args.get("filename")
-    print(filename)
-    price, date = get_text(f"{MEDIA_PATH}/{filename}")
+    receipt_name = request.args.get("receipt_name")
+    print(receipt_name)
+    db_file_path = db_mgmt.get_path_by_name(receipt_name)
+    print(db_file_path)
+    price, date = get_text(str(db_file_path))
     return render_template("receipt.html", price=price, date=date)
 
 
